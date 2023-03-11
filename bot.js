@@ -75,16 +75,20 @@ bot.command("list", async (ctx) => {
     );
     return;
   }
-  pm2.list((error, processes) => {
+  pm2.list(async (error, processes) => {
     if (error) {
       console.error(`PM2 list error: ${error}`);
-      ctx.reply("Error listing PM2 processes.");
+      await ctx.reply("*Error listing PM2 processes.*", {
+        parse_mode: "Markdown",
+      });
       return;
     }
     const processList = processes
-      .map((p) => `${p.name} (${p.pid}) - ${p.pm2_env.status}`)
+      .map((p) => `${p.name} - ${p.pm2_env.status}`)
       .join("\n");
-    ctx.reply(`PM2 Processes:\n${processList}`);
+    await ctx.reply(`*PM2 Processes:*\n\n_${processList}_`, {
+      parse_mode: "Markdown",
+    });
   });
 });
 
@@ -98,16 +102,22 @@ bot.command("restart", async (ctx) => {
   }
   const processId = ctx.message.text.split(" ")[1];
   if (!processId) {
-    ctx.reply("Please provide a process ID to restart.");
+    await ctx.reply("*Please provide a process ID to restart.*", {
+      parse_mode: "Markdown",
+    });
     return;
   }
-  pm2.restart(processId, (error, _) => {
+  pm2.restart(processId, async (error, _) => {
     if (error) {
       console.error(`PM2 restart error: ${error}`);
-      ctx.reply(`Error restarting process ${processId}.`);
+      await ctx.reply(`*Error restarting process ${processId}.*`, {
+        parse_mode: "Markdown",
+      });
       return;
     }
-    ctx.reply(`Restarting process ${processId}...`);
+    await ctx.reply(`*Restarting process ${processId}*`, {
+      parse_mode: "Markdown",
+    });
   });
 });
 
